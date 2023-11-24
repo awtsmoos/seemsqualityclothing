@@ -13,10 +13,24 @@ body {
     font-size:8px;
 }
 header {
+    max-width:100%;
     background-color: #ffffff;
     color: white;
     text-align: center;
     padding: 1rem 0;
+}
+
+header img {
+    width:100%
+}
+
+#categoryNav {
+    display: flex;         /* Enable Flexbox */
+    flex-wrap: wrap;       /* Allow items to wrap onto the next line */
+    justify-content: center; /* Center items horizontally */
+    align-items: center;   /* Center items vertically */
+    padding: 0;            /* Adjust padding as needed */
+    margin: 0;             /* Adjust margin as needed */
 }
 
 .img {
@@ -75,7 +89,9 @@ nav a:hover {
 
 footer {
     text-align: center;
-    padding: 10px 0;
+    padding: 20px;
     background-color: #36baa5;;
     color: white;
+    margin:10px;
+    flex: 0 1 auto;        /* Don't grow, allow shrinking, and base size on content */;
 }
