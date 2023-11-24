@@ -6,9 +6,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                         'Womens', 'Perfumes', 'Accessories',
         "Linens"                   
     ];
-    var indexes = {
-        Womens: "https://firebasestorage.googleapis.com/v0/b/seems-quality-clothing.appspot.com/o/categories%2Findexes%2Fwomen_indexes.js?alt=media"
-    };
+
+    var catMap = {
+        Mens: "men",
+        "Womens":"women",
+        "Perfumes":"perfume",
+        "Linens":"linen",
+      //  "Accessories":"accessory"
+    }
+
+    var base = "/database/$categorySingular_indexes.js"
+    var indexes = Object.fromEntries(
+        categories.map(c => [
+           
+               c,
+           catMap[c] ? base.replace(
+                   "$categorySingular", 
+                    catMap[c]
+                ) : null
+               
+           
+        ]).filter(w=>w[1])
+    );
+    console.log(indexes)
 
     var baseIMGs = "https://firebasestorage.googleapis.com/v0/b/seems-quality-clothing.appspot.com/o/categories%2F";
 
@@ -67,7 +87,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     }
                     loadedData[curCat].index = imp.default;
-                    
+                    //sort it;
+                    loadedData[curCat].index = sort(
+                        loadedData[curCat].index
+                    )
                     console.log(window.s=loadedData);
                     d.innerHTML = "Loading more, just wait!";
                     var cind = loadedData[curCat].index;
@@ -90,10 +113,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                             d.appendChild(im); return;
                         }
                         im.className = "grid-item"
-
-                        var img = document.createElement("img");
-                        img.src = pt;
-                        im.appendChild(img);d.appendChild(im);
+                        await new Promise((r,j) => {
+                             var img = document.createElement("img");
+                            img.src = pt;
+                            im.appendChild(img);d.appendChild(im);
+                            img.onload = () => {
+                                r()
+                            }
+                            img.onerror = () =>r()
+                        })
+                       
 
                         
                     }
@@ -124,6 +153,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     await switchCategory(categories[0]);
 });
 
+function sort(array) {
+    return sortImagesByDate(array)
+}
+
+function sortImagesByDate(imagesArray) {
+    return imagesArray.sort((a, b) => {
+        // Convert date strings to Date objects
+        const dateA = new Date(a[3]);
+        const dateB = new Date(b[3]);
+
+        // Compare the dates
+        return dateB - dateA;
+    });
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./service-worker.js').then(function(registration) {
@@ -135,3 +179,4 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+

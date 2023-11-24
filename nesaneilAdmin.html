@@ -1,0 +1,135 @@
+<!--B"H-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Firebase Storage UI</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div id="signInButton">Sign In with Google</div>
+    <div id="signOutButton" style="display:none;">Sign Out</div>
+
+    <div id="categories" style="display:none;">
+        <!-- Categories will be dynamically inserted here -->
+    </div>
+
+    <div id="categoryContent" style="display:none;">
+        <!-- Content for selected category will be displayed here -->
+    </div>
+<div class="BH"><h3>B"H</h3></div>
+
+<link rel="stylesheet" href="style.css">
+<script type="module">
+// Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLPA_Zn2flYQmMUWSDga1Q9lMF_CzDzJw",
+    authDomain: "seems-quality-clothing.firebaseapp.com",
+    projectId: "seems-quality-clothing",
+    storageBucket: "seems-quality-clothing.appspot.com",
+    messagingSenderId: "434694603291",
+    appId: "1:434694603291:web:885e2e85618e004d08eebe"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+    const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+  
+// Categories Array
+const categories = ["mens", "womens", "accessories", "perfumes"];
+
+signInButton.onclick = signInWithGoogle;
+  
+function signInWithGoogle() {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // User signed in
+      // You can get the user info from result.user
+    }).catch((error) => {
+      // Handle Errors here.
+    });
+}
+
+function signOutUser() {
+  signOut(auth).then(() => {
+    // Sign-out successful.
+  }).catch((error) => {
+    // An error happened.
+  });
+}
+
+function uploadFile(file, filePath) {
+  const storage = getStorage(app);
+  const storageRef = ref(storage, filePath);
+
+  uploadBytes(storageRef, file).then((snapshot) => {
+    console.log('File uploaded successfully');
+  }).catch((error) => {
+    console.error('Error uploading file:', error);
+  });
+}
+
+function downloadFile(filePath) {
+  const storage = getStorage(app);
+  const pathReference = ref(storage, filePath);
+
+  getDownloadURL(pathReference)
+    .then((url) => {
+      // Insert URL into an <img> tag or download the file
+    }).catch((error) => {
+      // Handle any errors
+    });
+}
+
+
+
+
+// Load Categories
+function loadCategories() {
+    const categoriesDiv = document.getElementById("categories");
+    categoriesDiv.innerHTML = ""; // Clear existing categories
+    categories.forEach(category => {
+        let categoryButton = document.createElement("button");
+        categoryButton.innerText = category;
+        categoryButton.onclick = () => loadCategoryContent(category);
+        categoriesDiv.appendChild(categoryButton);
+    });
+}
+
+// Load Category Content
+async function loadCategoryContent(category) {
+    try {
+        const categoryRef = ref(storage, `indexes/${category}_indexes.js`);
+        const categoryContent = await import(categoryRef.fullPath);
+        alert("loaded but we didnt display yet!")
+        // Display category content
+        // ...
+    } catch (error) {
+        // Handle error (e.g., file not found)
+        console.error(error);
+        displayNoContentMessage(category);
+    }
+}
+
+function displayNoContentMessage(category) {
+  alert("no")
+    // Display a message indicating no content for the category
+    // ...
+}
+
+// File Upload Logic
+// ...
+
+loadCategories(); // Initial call to load categories
+</script>
+</body>
+</html>
