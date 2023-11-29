@@ -49,7 +49,11 @@
         </div>
     </footer>
    <div class="counter hidden">
-<img src="https://www.cutercounter.com/hits.php?id=hvxoodfk&nd=6&style=1" border="0" alt="hit counter">
+       <script>
+            fetch("https://awtsmoos.com/api/social/counters/BH_82061_Resonance_Existence/increaseCount")
+           .then(r=>r.text())
+           .then(r=>console.log("Counted",r))
+       </script>
    </div>
     <script src="./script.js"></script>
 </body>
