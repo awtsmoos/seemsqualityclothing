@@ -25,7 +25,7 @@ header {
 }
 
 header img {
-   max-width:515px;
+  max-width: min(100vw,515px);
 }
 
 #categoryNav {
